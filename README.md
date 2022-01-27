@@ -1,2 +1,2 @@
 # Incubadora-arduino
-Incubadora básica con arduino 
+  Incubadora con arduino  ,  pantalla OLED SSD1306 128*32   y   NTC 100KΩ
