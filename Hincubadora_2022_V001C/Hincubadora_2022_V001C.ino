@@ -17,7 +17,7 @@
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 
 #include "Pantalla.h"
-//#include "PID.h"
+
 //---------------------------------------------------------------------------------
 
 double celsius_1 = 20;
@@ -43,14 +43,12 @@ float c1 = 2.114990448e-03, c2 = 0.383281228e-04, c3 = 5.228061052e-07;
 #define PIN_INPUT 0
 #define PIN_ReleS1 13
 
-//#include "PID.h"
-
 //Define Variables we'll be connecting to
 double Setpoint = 21;
 double Output;
 unsigned long TiempoAlto;
 
-//Specify the links and initial tuning parameters  P = propocion al error , I = incremento al pulso , D = rectifica al mobimiento "como, cuidado que biene"
+//Specify the links and initial tuning parameters  P = propocion al error , I = incremento al pulso , D = rectifica al movimiento "como, cuidado que biene"
 double Kp=3.5, Ki=1.00, Kd=0.50;
 //PID myPID(&Input, &Output, &Setpoint, Kp, Ki, Kd, DIRECT);
 
