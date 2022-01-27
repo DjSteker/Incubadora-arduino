@@ -50,7 +50,6 @@ unsigned long TiempoAlto;
 
 //Specify the links and initial tuning parameters  P = propocion al error , I = incremento al pulso , D = rectifica al movimiento "como, cuidado que biene"
 double Kp=3.5, Ki=1.00, Kd=0.50;
-//PID myPID(&Input, &Output, &Setpoint, Kp, Ki, Kd, DIRECT);
 
 PID myPID(&celsius_1, &Output, &Setpoint, Kp, Ki, Kd, DIRECT);
 
@@ -61,6 +60,8 @@ PID myPID(&celsius_1, &Output, &Setpoint, Kp, Ki, Kd, DIRECT);
 void setup() {
 
   //inputString.reserve(200);
+  
+  // Divisor del reloj
   bitWrite(ADCSRA, ADPS2, 1);
   bitWrite(ADCSRA, ADPS1, 0);
   bitWrite(ADCSRA, ADPS0, 1);
