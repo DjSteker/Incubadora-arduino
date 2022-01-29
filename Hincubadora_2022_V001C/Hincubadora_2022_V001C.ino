@@ -82,7 +82,8 @@ void setup() {
   //---------------------------------------------------------------------------------
   
   //initialize the variables we're linked to
-  myPID.SetOutputLimits(0, 500);
+  //myPID.SetOutputLimits(0, 500);
+  myPID.SetOutputLimits(0, 1000);
   //myPID.SampleTime(2000);
 
   
