@@ -1,4 +1,5 @@
 
+
 #include "TramasMicros2.h"
 
 
@@ -17,12 +18,14 @@
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 
 #include "Pantalla.h"
-
+//#include "PID.h"
 //---------------------------------------------------------------------------------
+
+bool lecturaPar = false;
 
 double celsius_1 = 20;
 int ThermistorPin = 0;
-const int TemperaturaRedundante = 40;
+const int TemperaturaRedundante = 50;
 int Vout_a[TemperaturaRedundante];
 
 
@@ -41,15 +44,19 @@ float c1 = 2.114990448e-03, c2 = 0.383281228e-04, c3 = 5.228061052e-07;
 #include <PID_v1.h>
 
 #define PIN_INPUT 0
-#define PIN_ReleS1 13
+#define PIN_ReleS1 11
+#define PIN_Led 13
+
+//#include "PID.h"
 
 //Define Variables we'll be connecting to
 double Setpoint = 21;
 double Output;
 unsigned long TiempoAlto;
 
-//Specify the links and initial tuning parameters  P = propocion al error , I = incremento al pulso , D = rectifica al movimiento "como, cuidado que biene"
-double Kp=3.5, Ki=1.00, Kd=0.50;
+//Specify the links and initial tuning parameters  P = propocion al error , I = incremento al pulso , D = rectifica al mobimiento "como, cuidado que biene"
+double Kp=5.0, Ki=1.00, Kd=0.75;
+//PID myPID(&Input, &Output, &Setpoint, Kp, Ki, Kd, DIRECT);
 
 PID myPID(&celsius_1, &Output, &Setpoint, Kp, Ki, Kd, DIRECT);
 
@@ -60,8 +67,6 @@ PID myPID(&celsius_1, &Output, &Setpoint, Kp, Ki, Kd, DIRECT);
 void setup() {
 
   //inputString.reserve(200);
-  
-  // Divisor del reloj
   bitWrite(ADCSRA, ADPS2, 1);
   bitWrite(ADCSRA, ADPS1, 0);
   bitWrite(ADCSRA, ADPS0, 1);
@@ -80,9 +85,13 @@ void setup() {
   Serial.begin(115200);
 
   //---------------------------------------------------------------------------------
+
+  pinMode(PIN_ReleS1, OUTPUT);  
+  pinMode(PIN_Led, OUTPUT);  
+  //pinMode(PIN_INPUT, INPUT);  
+  //---------------------------------------------------------------------------------
   
   //initialize the variables we're linked to
-  //myPID.SetOutputLimits(0, 500);
   myPID.SetOutputLimits(0, 1000);
   //myPID.SampleTime(2000);
 
@@ -105,20 +114,6 @@ void setup() {
     display.print(".");
     display.display();  
     delay(250);
-
-//    if (indice_1 == 0) {
-//      display.setCursor(10, 20);
-//      display.print("ok");
-//      display.display();  
-//      delay(1250);
-//      }
-//
-//      if (indice_1 == -1) {
-//      display.setCursor(30, 20);
-//      display.print("jo");
-//      display.display();  
-//      delay(1250);
-//      }
       
   }
   
@@ -129,7 +124,7 @@ void setup() {
 //---------------------------------------------------------------------------------
 
 
-TramaTiempo blink_LecturaSensores = TramaTiempo(500103, LecturaSensores);
+TramaTiempo blink_LecturaSensores = TramaTiempo(70103, LecturaSensores);
 TramaTiempo blink_PID = TramaTiempo(2000007, CumputePID);
 TramaTiempo blink_PidGap = TramaTiempo(4000103, CumputePidGap);
 TramaTiempo blink_DisplayOLED = TramaTiempo(1000105, DisplayOLED);
@@ -162,12 +157,18 @@ void LecturaSensores() {
   celsius_1 = Temperature1 - 273.15; // Centigrados
   Temperature1 = (Temperature1 * 9.0)/ 5.0 + 32.0;  // Farenheit
 
-  for (int indice_1 = 19; indice_1 > 0; indice_1--) {
+  for (int indice_1 = (TemperaturaRedundante - 1); indice_1 > 0; indice_1--) {
     Vout_a[indice_1] = Vout_a[indice_1 - 1];
 
   }
   Vout_a[0] = VoutR2;
- 
+ if ( lecturaPar == false ){
+  digitalWrite(PIN_Led,LOW);
+  lecturaPar = true;
+ } else {
+  digitalWrite(PIN_Led,HIGH);
+  lecturaPar = false;
+ }
 }
 
 void CumputePID() {
@@ -197,22 +198,28 @@ void CumputePidGap(){
     display.print(gap);
     display.println(".");
   }
+  else if ((gap < 1) && (celsius_1 > Setpoint) ) {
+    myPID.SetTunings(Kp + 15, Ki + 1.50, Kd + 0.50);
+    display.setCursor(60, 12);
+    display.print(gap);
+    display.println("z");
+  }
   else if (gap < 1) {
-    myPID.SetTunings(Kp + 15, Ki + 0.5, Kd + 0.5);
+    myPID.SetTunings(Kp + 5, Ki + 0.75, Kd + 0.75);
     display.setCursor(60, 12);
     display.print(gap);
     display.println("o");
   }
   else if (gap < 2) {
          //we're far from setpoint, use aggressive tuning parameters
-     myPID.SetTunings(Kp + 25.2, Ki + 1, Kd + 0.5);
+     myPID.SetTunings(Kp + 25.2, Ki + 1.25, Kd + 1.00);
      display.setCursor(60, 12);
      display.print(gap);
      display.println("D");}
   else
   {
      //we're far from setpoint, use aggressive tuning parameters
-     myPID.SetTunings(Kp + 90.2, Ki + 1.25, Kd + 0.7);
+     myPID.SetTunings(Kp + 90.2, Ki + 2.50, Kd + 1.75);
      display.setCursor(60, 12);
      display.print(gap);
      display.println("X");
