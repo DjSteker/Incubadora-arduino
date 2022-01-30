@@ -1,5 +1,6 @@
 
 
+
 #include "TramasMicros2.h"
 
 
@@ -60,7 +61,7 @@ double Kp=5.0, Ki=1.00, Kd=0.75;
 
 PID myPID(&celsius_1, &Output, &Setpoint, Kp, Ki, Kd, DIRECT);
 
-
+double gap = 0;
 //---------------------------------------------------------------------------------
 
 
@@ -162,13 +163,16 @@ void LecturaSensores() {
 
   }
   Vout_a[0] = VoutR2;
- if ( lecturaPar == false ){
-  digitalWrite(PIN_Led,LOW);
-  lecturaPar = true;
- } else {
-  digitalWrite(PIN_Led,HIGH);
-  lecturaPar = false;
- }
+  if (gap > 2) {
+    if ( lecturaPar == false ){
+      digitalWrite(PIN_Led,LOW);
+      lecturaPar = true;
+    } else {
+      digitalWrite(PIN_Led,HIGH);
+      lecturaPar = false;
+    }
+  }
+
 }
 
 void CumputePID() {
@@ -189,7 +193,7 @@ void CumputePID() {
 
 void CumputePidGap(){
   
-  double gap = abs(Setpoint-celsius_1); //distance away from setpoint
+  gap = abs(Setpoint-celsius_1); //distance away from setpoint
   if (gap < 0.5)
   {  
     //we're close to setpoint, use conservative tuning parameters
@@ -325,7 +329,7 @@ void DisplayOLED() {
 
 
 
-   display.drawBitmap( 0 , 24 , solar, 8, 8, 1);
+  display.drawBitmap( 0 , 24 , solar, 8, 8, 1);
   display.setCursor(10, 24);
   display.print(Output);
   display.println("PMW");
