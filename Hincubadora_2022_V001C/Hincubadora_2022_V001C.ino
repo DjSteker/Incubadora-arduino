@@ -171,7 +171,7 @@ void LecturaSensores() {
       digitalWrite(PIN_Led,HIGH);
       lecturaPar = false;
     }
-  }
+  } else {digitalWrite(PIN_Led,LOW);}
 
 }
 
