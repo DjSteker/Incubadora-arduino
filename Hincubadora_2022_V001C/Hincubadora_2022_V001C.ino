@@ -254,7 +254,7 @@ void Rele1(){
   }
   else
   {
-    if (TiempoAlto_S1 > 0 ) {
+    if (TiempoAlto_S1 <= 0 ) {
       digitalWrite(PIN_ReleS1, HIGH);//digitalWrite(PinLedS1, HIGH);
       blink_Rele1.setInterval(TiempoAlto_S1) ;
       } else {
