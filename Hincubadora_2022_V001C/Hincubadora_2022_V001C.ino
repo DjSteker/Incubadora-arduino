@@ -124,10 +124,10 @@ void setup() {
 //---------------------------------------------------------------------------------
 
 
-TramaTiempo blink_LecturaSensores = TramaTiempo(70103, LecturaSensores);
-TramaTiempo blink_PID = TramaTiempo(2000007, CumputePID);
-TramaTiempo blink_PidGap = TramaTiempo(4000103, CumputePidGap);
-TramaTiempo blink_DisplayOLED = TramaTiempo(1000105, DisplayOLED);
+TramaTiempo blink_LecturaSensores = TramaTiempo(70111, LecturaSensores);
+TramaTiempo blink_PID = TramaTiempo(2000009, CumputePID);
+TramaTiempo blink_PidGap = TramaTiempo(4010701, CumputePidGap);
+TramaTiempo blink_DisplayOLED = TramaTiempo(1000117, DisplayOLED);
 
 TramaTiempo blink_Rele1 = TramaTiempo(3146055, Rele1);
 
@@ -157,7 +157,7 @@ void LecturaSensores() {
   celsius_1 = Temperature1 - 273.15; // Centigrados
   Temperature1 = (Temperature1 * 9.0)/ 5.0 + 32.0;  // Farenheit
 
-  for (int indice_1 = (TemperaturaRedundante - 1); indice_1 > 0; indice_1--) {
+  for (int indice_1 = (TemperaturaRedundante - 1); indice_1 = 0; indice_1--) {
     Vout_a[indice_1] = Vout_a[indice_1 - 1];
 
   }
