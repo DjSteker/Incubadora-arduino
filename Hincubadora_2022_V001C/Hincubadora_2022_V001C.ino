@@ -126,7 +126,6 @@ void setup() {
 
 TramaTiempo blink_LecturaSensores = TramaTiempo(70111, LecturaSensores);
 TramaTiempo blink_PID = TramaTiempo(2000009, CumputePID);
-//TramaTiempo blink_PidGap = TramaTiempo(400010603, CumputePidGap);
 TramaTiempo blink_PidGap = TramaTiempo(4010701, CumputePidGap);
 TramaTiempo blink_DisplayOLED = TramaTiempo(1000105, DisplayOLED);
 
@@ -148,10 +147,7 @@ void LecturaSensores() {
 
   //R2 = R1 * (1023.0 / (( ( (float)Vout1) + (float)Vout2 + (float)Vout3 + (float)Vout4 + (float)Vout5 + (float)Vout6 + (float)Vout7 + (float)Vout8 + (float)Vout9 + (float)Vout10) / 10) - 1.0);
   R2 = R1 * (1023.0 / Vout_Media - 1) ;
-  //R2 = (R2 + Vout_Media) / 2;
-//  display.setCursor(70, 24);
-//  display.print(R2);
-//  display.display();
+
    
   logR2 = log(R2);
   Temperature1  = (1.0 / (c1 + c2*logR2 + c3*logR2*logR2*logR2)); // kelvin
@@ -177,9 +173,9 @@ void LecturaSensores() {
 
 void CumputePID() {
   
-  //Input = analogRead(PIN_INPUT);
+
   myPID.Compute();
-  //analogWrite(PIN_ReleS1, Output);
+
 
   Serial.print("Temperature: "); 
   Serial.print(Temperature1);
@@ -250,11 +246,10 @@ void Rele1(){
   TiempoAlto_S1 = ( (Output * 20000) + TiempoAlto ) / 2 ;
   TiempoBajo_S1 = 10000000 - TiempoAlto_S1;
 
-  //TiempoAlto = Output;
   
   if ((bool)digitalRead(PIN_ReleS1))
   {
-    digitalWrite(PIN_ReleS1, LOW);//digitalWrite(PinLedS1, LOW);
+    digitalWrite(PIN_ReleS1, LOW);
     if (TiempoBajo_S1 > 0 ){
       blink_Rele1.setInterval(TiempoBajo_S1) ;
     } else {
