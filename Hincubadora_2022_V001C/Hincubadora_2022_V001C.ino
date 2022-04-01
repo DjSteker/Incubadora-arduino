@@ -157,7 +157,7 @@ void LecturaSensores() {
   celsius_1 = Temperature1 - 273.15; // Centigrados
   Temperature1 = (Temperature1 * 9.0)/ 5.0 + 32.0;  // Farenheit
 
-  for (int indice_1 = (TemperaturaRedundante - 1); indice_1 = 0; indice_1--) {
+  for (int indice_1 = (TemperaturaRedundante - 1); indice_1 > 0; indice_1--) {
     Vout_a[indice_1] = Vout_a[indice_1 - 1];
 
   }
