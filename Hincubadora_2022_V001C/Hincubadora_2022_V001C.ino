@@ -139,7 +139,7 @@ void LecturaSensores() {
   VoutR2 = analogRead(ThermistorPin);
 
   
-  int Vout_Media = 0;
+  float Vout_Media = 0;
   for (int indice_1 = 0; indice_1 < TemperaturaRedundante; indice_1++) {   
     Vout_Media += Vout_a[indice_1] ;
   }
